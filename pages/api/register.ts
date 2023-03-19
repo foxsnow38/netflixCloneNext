@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "POST") return res.status(405).end();
-  const { username, password, email } = req.body;
+  const { name, password, email } = req.body;
   try {
     const existingUser = await prismadb.user.findFirst({
       where: { email: email },
@@ -20,7 +20,7 @@ export default async function handler(
       data: {
         email,
         hashedPassword,
-        username,
+        name,
         image: "",
         emailVerified: new Date(),
       },

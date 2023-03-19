@@ -1,7 +1,32 @@
+import Navbar from "@/components/Navbar";
+import useCurrentUser from "@/hooks/useCurrentUser";
+import { NextPageContext } from "next";
+import { getSession, signOut } from "next-auth/react";
+import Billboard from "../components/Billboard";
+
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
+
 export default function Home() {
+  const { data, error, isLoading } = useCurrentUser();
+
   return (
     <>
-      <div className="text-green-500 text-2xl">Netflix Clone</div>
+      <Navbar />
+      <Billboard />
     </>
   );
 }

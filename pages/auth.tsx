@@ -1,15 +1,37 @@
-import { signIn } from "next-auth/react";
-import { Input } from "@/components/input";
+import { signIn, getSession } from "next-auth/react";
+import { Input } from "@/components/Input";
 import React, { useCallback } from "react";
 import { useRouter } from "next/router";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { NextPageContext } from "next";
+import { Session } from "next-auth";
 
-export default function Auth() {
-  const router = useRouter();
+export async function getServerSideProps(context: NextPageContext) {
+  const session = await getSession(context);
+  if (session) {
+    return {
+      redirect: {
+        destination: "/profiles",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
+
+type AuthType = {
+  session: Session | null;
+};
+
+export default function Auth({ session }: AuthType) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [username, setUsernameName] = React.useState("");
+  const [name, setName] = React.useState("");
+
   const [variant, setVariant] = React.useState<"login" | "signup">("login");
   const toggleVariant = useCallback(() => {
     setVariant((prev) => (prev === "login" ? "signup" : "login"));
@@ -21,18 +43,16 @@ export default function Auth() {
         email,
         password,
         redirect: false,
-        callbackUrl: "/",
+        callbackUrl: "/profiles",
       });
-
-      router.push("/");
     } catch (err: any) {
       console.log(err);
     }
-  }, [email, password, router]);
+  }, [email, password]);
 
   const register = useCallback(async () => {
     try {
-      fetch("/api/register", {
+      await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,14 +60,14 @@ export default function Auth() {
         body: JSON.stringify({
           email,
           password,
-          username,
+          name,
         }),
       }).then((res) => res.json());
-      login();
+      await login();
     } catch (err) {
       console.log(err);
     }
-  }, [email, password, username, login]);
+  }, [email, password, name, login]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-fixed bg-cover">
@@ -72,8 +92,8 @@ export default function Auth() {
                 <Input
                   id="name"
                   label="Username"
-                  value={username}
-                  onchange={(e) => setUsernameName(e.target.value)}
+                  value={name}
+                  onchange={(e) => setName(e.target.value)}
                 />
               )}
 
@@ -93,7 +113,7 @@ export default function Auth() {
             </button>
             <div className="flex flex-row items-center justify-center gap-4 mt-8">
               <div
-                onClick={() => signIn("google", { callbackUrl: "/" })}
+                onClick={() => signIn("google", { callbackUrl: "/profiles" })}
                 className="w-10 h-10 bg-white rounded-full
                   flex 
                   items-center
@@ -107,7 +127,7 @@ export default function Auth() {
               </div>
 
               <div
-                onClick={() => signIn("github", { callbackUrl: "/" })}
+                onClick={() => signIn("github", { callbackUrl: "/profiles" })}
                 className="w-10 h-10 bg-white rounded-full
                   flex 
                   items-center
