@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useFavorites from "@/hooks/useFavorites";
 import { AiFillHeart, AiOutlinePlus } from "react-icons/ai";
@@ -7,12 +7,12 @@ interface FavoriteButtonProps {
   movieId: string;
 }
 const FavoriteButton = ({ movieId }: FavoriteButtonProps) => {
-  const { mutate: mutateFavorites } = useFavorites(movieId);
+  const { mutate: mutateFavorites } = useFavorites();
   const { data: currentUser, mutate: mutateUser } = useCurrentUser();
 
   const isFavorite = React.useMemo(() => {
     return currentUser?.favoritesIds?.includes(movieId);
-  }, [currentUser.favoritesIds, currentUser, movieId]);
+  }, [currentUser, movieId]);
 
   const toggleFavorites = React.useCallback(async () => {
     let response: any;
@@ -41,6 +41,21 @@ const FavoriteButton = ({ movieId }: FavoriteButtonProps) => {
     mutateFavorites();
   }, [currentUser, isFavorite, movieId, mutateFavorites, mutateUser]);
 
+  const Icons = useCallback(() => {
+    if (isFavorite) {
+      return (
+        <AiFillHeart size={20} className="text-white hover:text-neutral-300" />
+      );
+    } else {
+      return (
+        <AiOutlinePlus
+          size={20}
+          className="text-white hover:text-neutral-300"
+        />
+      );
+    }
+  }, [isFavorite]);
+
   return (
     <div
       onClick={toggleFavorites}
@@ -60,12 +75,11 @@ const FavoriteButton = ({ movieId }: FavoriteButtonProps) => {
      transition
     hover:border-neutral-300"
     >
-      {isFavorite ? (
-        <AiFillHeart className="text-white" size={24} />
-      ) : (
-        <AiOutlinePlus className="text-white" size={27} />
-      )}
+      <Icons />
     </div>
   );
 };
 export default FavoriteButton;
+function useMem(arg0: () => JSX.Element, arg1: any[]) {
+  throw new Error("Function not implemented.");
+}

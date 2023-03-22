@@ -19,11 +19,7 @@ export default function MovieList({ data, title }: MovieListProps) {
           className="
         grid
         grid-cols-4
-        gap-2
-        
-
-        
-        "
+        gap-2"
         >
           {data.length > 0 &&
             data.map((movie) => <MovieCard key={movie.id} data={movie} />)}
