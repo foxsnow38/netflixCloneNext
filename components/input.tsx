@@ -8,12 +8,12 @@ type inputProps = {
   type?: string;
 };
 
-export const Input: React.FC<inputProps> = ({
+const Input: React.FC<inputProps> = ({
   id,
   onchange,
   value,
   label,
-  type = "text",
+  type = "text"
 }) => {
   return (
     <div className="relative">
@@ -49,3 +49,5 @@ export const Input: React.FC<inputProps> = ({
     </div>
   );
 };
+
+export default Input;
