@@ -1,5 +1,5 @@
 import { signIn, getSession } from "next-auth/react";
-import Input from "../components/Input";
+import Input from "../components/input";
 import React, { useCallback } from "react";
 
 import { FcGoogle } from "react-icons/fc";
