@@ -1,7 +1,7 @@
 import { signIn, getSession } from "next-auth/react";
-import { Input } from "@/components/Input";
+import { Input } from "../components/Input";
 import React, { useCallback } from "react";
-import { useRouter } from "next/router";
+
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { NextPageContext } from "next";
@@ -13,13 +13,13 @@ export async function getServerSideProps(context: NextPageContext) {
     return {
       redirect: {
         destination: "/profiles",
-        permanent: false,
-      },
+        permanent: false
+      }
     };
   }
 
   return {
-    props: { session },
+    props: { session }
   };
 }
 
@@ -34,7 +34,7 @@ export default function Auth({ session }: AuthType) {
 
   const [variant, setVariant] = React.useState<"login" | "signup">("login");
   const toggleVariant = useCallback(() => {
-    setVariant((prev) => (prev === "login" ? "signup" : "login"));
+    setVariant(prev => (prev === "login" ? "signup" : "login"));
   }, []);
 
   const login = useCallback(async () => {
@@ -43,7 +43,7 @@ export default function Auth({ session }: AuthType) {
         email,
         password,
         redirect: false,
-        callbackUrl: "/profiles",
+        callbackUrl: "/profiles"
       });
     } catch (err: any) {
       console.log(err);
@@ -55,14 +55,14 @@ export default function Auth({ session }: AuthType) {
       await fetch("/api/register", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           email,
           password,
-          name,
-        }),
-      }).then((res) => res.json());
+          name
+        })
+      }).then(res => res.json());
       await login();
     } catch (err) {
       console.log(err);
@@ -85,7 +85,7 @@ export default function Auth({ session }: AuthType) {
                 id="email"
                 label="Email"
                 value={email}
-                onchange={(e) => setEmail(e.target.value)}
+                onchange={e => setEmail(e.target.value)}
               />
 
               {variant === "signup" && (
@@ -93,7 +93,7 @@ export default function Auth({ session }: AuthType) {
                   id="name"
                   label="Username"
                   value={name}
-                  onchange={(e) => setName(e.target.value)}
+                  onchange={e => setName(e.target.value)}
                 />
               )}
 
@@ -101,7 +101,7 @@ export default function Auth({ session }: AuthType) {
                 id="password"
                 label="Password"
                 value={password}
-                onchange={(e) => setPassword(e.target.value)}
+                onchange={e => setPassword(e.target.value)}
                 type="password"
               />
             </div>
